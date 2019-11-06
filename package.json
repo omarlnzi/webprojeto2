@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/omarlnzi/webprojeto2#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "handlebars": "^4.5.1",
+    "hbs": "^4.0.6"
   }
 }
