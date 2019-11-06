@@ -3,8 +3,16 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>HOME TESTE</title>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
   </head>
   <body>
     <h1>Pagina de teste HOME</h1>
+    <h2>NOMES</h2>
+    <ul>
+    {{#each nomes}}
+      <li>{{this}}</li>
+    {{/each}}
+    </ul>
+    
   </body>
 </html>

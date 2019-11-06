@@ -6,6 +6,7 @@ let express = require('express'),
 //app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'hbs');
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.send({
@@ -14,7 +15,8 @@ app.get('/', (req, res) => {
   });
 });
 app.get('/a', (req, res) => {
-  res.render('home');
+  let nomes = ['Marcos','Omar','Pedro'];
+  res.render('home', {nomes: nomes});
 });
 
 app.listen(port, err => {
