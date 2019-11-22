@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Registro</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+  <link rel="stylesheet" href="login.css" type="text/css" media="screen" charset="utf-8">
+</head>
+
+<body>
+  <div id="form_wrapper">
+    <div id="form_left">
+      <img src="images/udacity.svg" alt="udacity icon">
+    </div>
+    <div id="form_right">
+      <form action="/registro" method="POST" id="form_right">
+      <h1>Registro</h1>
+      <% include ./messages %>
+        <div class="input_container">
+          <i class="fas fa-user"></i>
+          <input placeholder="Nome de Usuario" type="username" name="username" id="field_email" class='input_field' 
+          value="<%= typeof username != 'undefined' ? username : '' %>">
+        </div>
+        <div class="input_container">
+          <i class="fas fa-envelope"></i>
+          <input placeholder="Email" type="email" name="email" id="field_email" class='input_field'
+          value="<%= typeof email != 'undefined' ? email : '' %>"
+          >
+        </div>
+        <div class="input_container">
+          <i class="fas fa-lock"></i>
+          <input placeholder="Password" type="password" name="password" id="field_password" class='input_field'
+          value="<%= typeof password != 'undefined' ? password : '' %>"
+          >
+        </div>
+        <div class="input_container">
+          <i class="fas fa-lock"></i>
+          <input placeholder="Repita a senha" type="password" name="password2" id="field_password" class='input_field'>
+        </div>
+        <input type="submit" value="Registrar" id='input_submit' class='input_field'
+        value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+        >
+        
+        <span id='create_account'>
+          <a href="login">Já é cadastrado? Faça Login ➡ </a>
+        </span>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>

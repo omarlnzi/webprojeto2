@@ -1,80 +1,68 @@
 let express = require('express'),
-    path = require('path'),
-    port = 3000,
-    app = express(),
-    // createError = require('http-errors'),
-    // logger = require('morgan'),
-    fs = require('fs'),
-    mongoose = require('mongoose'),
-    multer = require('multer'),
-    upload = multer({ dest: 'public/uploads' }),
-    images = [];
-    
-var Schema = mongoose.Schema;
-mongoose.connect('mongodb+srv://omar:mongosenha@cluster0-9f1lk.gcp.mongodb.net/projetobd?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
-var doc = mongoose.model('postagens', new Schema(
-  {name : String, idade: String})
-); 
-doc.find({}, function(err,collection){ 
-  console.log(collection)
-});
+  path = require('path'),
+  port = 3000 || process.env.port,
+  app = express(),
+  mongoose = require('mongoose'),
+
+  session = require('express-session'),
+  MongoStore = require('connect-mongo')(session),
+  passport = require('passport'),
+  cookieParser = require('cookie-parser');
+  
 
 
+
+ var Schema = mongoose.Schema;
+require('./app/config/passport')(passport);
+const expressLayouts = require('express-ejs-layouts');
+const flash = require('connect-flash');
+
+
+const chave = require('./app/config/keys').mongoURI;
+mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true})
+  .then(() => console.log('MongoDB Conectado'))
+  .catch(err => console.log(err));
+
+
+// mongoose.Promise = global.Promise;
+
+
+
+app.use(express.urlencoded({ extended: false }));
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('Conectado com sucesso');
-  // db.collection("postagens", function(err, collection){
-  //   db.find({}).toArray(function(err, data){
-  //       console.log(data); // it will print your collection data
-  //   })
-  // });
-});
+app.use(cookieParser());
+app.use(session({
+    secret: 'my-precious',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: db })
+}));
 
-//app.engine('.hbs', exphbs({extname: '.hbs'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.sucesso_msg = req.flash('sucesso_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  next();
+})
+
 app.set('views', path.join(__dirname, 'app/views'));
-app.set('view engine', 'hbs');
-app.use('/',express.static(path.join(__dirname, 'public')));
+
+app.use(expressLayouts);
+app.set('view engine', 'ejs');
+
+app.use('/', express.static(path.join(__dirname, 'public')));
+
+app.use('/', require('./app/routes/index'));
+app.use('/', require('./app/routes/users'));
+
 app.use('/img', express.static(__dirname + '/public/uploads'));
-
-app.get('/', (req, res) => {
-  res.send({
-    title: "Meu yeye Express",
-    version: "0.0.0.0.1"
-  });
-});
-app.get('/a', (req, res) => {
-  let nomes = ['Marcos','Omar','Pedro'];
-  res.render('home', {nomes: nomes});
-});
-
-
-app.get('/testeupload', (req, res) => {
-  images = getImagesFromDir(path.join(__dirname,'/public/uploads'))
-  console.log(images);
-  res.render('upload.hbs', { images: images });
-});
-
-app.post('/upload', upload.single('arquivo'), (req, res) => {
-  images.push(req.file.filename)
-  res.redirect('/testeupload');
-});
 
 app.listen(port, err => {
   console.log(`Server is listening on ${port}`);
 });
 
-function getImagesFromDir(dirPath){
-  let allImages = [];
-  let files = fs.readdirSync(dirPath);
-  for(file of files){
-    let fileLocation = path.join(dirPath, file);
-    var stat = fs.statSync(fileLocation);
-    if(stat && stat.isDirectory()){
-      getImagesFromDir(fileLocation);
-    }else if (stat && stat.isFile()){
-      allImages.push('img/'+file);
-    }
-  }
-  return allImages;
-}

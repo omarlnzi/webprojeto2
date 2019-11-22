@@ -1,0 +1,127 @@
+.cabecalho{
+    background-color: white;
+    /* height: '96px';
+    width: '100%'; */
+    display: inline;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    margin: 0px;
+    
+}
+
+.bodycontainer{
+    background-image: url(./images/hero.jpg);
+    background-position-y: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 700px;
+}
+.logo{
+    padding: 32px 2%;
+}
+.opcoes{
+    width: 510px;
+    height: 48px;
+    position: absolute;
+    top: 24px;
+    left: 390px;
+    background-color: white;
+}
+.lista{
+    list-style-type: none;
+    padding: 0px auto 0px auto;
+}
+.item{
+    display: inline;
+    color: #525C65;
+    font: 16px "Open Sans", sans-serif;
+    margin: 0px auto 0px auto;
+}
+.flecinha{
+    padding: 0px 20px 0px 4px;
+}
+.divider{
+    padding: 0px 10px 0px 10px;
+}
+.caixa{
+    max-width: 534px;
+    height: 562.16px;
+    background-image: url("./images/blue-curve.svg");
+    border-radius: 10px;
+    margin-top: 0;
+    margin-left: 2%;
+    padding-top: 200px;
+}
+.blue-button{
+    width: 131px;
+    height: 32px;
+    background-color: #02b3e4;
+    border-radius: 4px;
+    position: relative;
+    left: 450px;
+    top: -40px;
+    box-shadow: 2px 2px 10px 0.2px #888888;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    color: white;
+    font: 13px "Open Sans", sans-serif;
+}
+h2{
+    text-align: left;
+    padding-top: 80px;
+    padding-left: 80px;
+    font: 32px "Open Sans", sans-serif;
+    color: white;
+}
+p{
+    padding-left: 80px;
+    font: 16px "Open Sans", sans-serif;
+    color: white;
+}
+input{
+    margin-left: 80px;
+    height: 50px;
+    width: 418px;
+    border-radius: 7px;
+    font-size: 1rem;
+    font-family: "Open Sans", sans-serif;
+    color: #242a2f;
+    border: 1px solid #dbe2e8;
+    background: #ededed url(https://static.tumblr.com/ftv85bp/MIXmud4tx/search-icon.png) no-repeat 9px center;
+    padding-left: 40px;
+}
+.topico{
+    padding-left: 80px;
+    padding-top: 35px;
+    height: 20px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    color: white;
+}
+.loguinho{
+    height: 20px;
+    width: 40px;
+}
+.chat{
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    background-image: url("./images/chat.png");
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: rgb(36, 177, 237);
+}
+.cLogo{
+    fill: white;
+    width: 50%; 
+    height: auto;
+    padding-top: 25%;
+    padding-left: 25%;
+}
