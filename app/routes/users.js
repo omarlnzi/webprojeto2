@@ -54,6 +54,7 @@ router.post('/registro', (req, res) => {
             email,
             password
           });
+
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(newUser.password, salt, (err, hash) => {
               if (err) throw err;
@@ -65,6 +66,7 @@ router.post('/registro', (req, res) => {
                     'sucesso_msg',
                     'Voce está Registrado e agora pode se logar'
                   );
+                  
                   res.redirect('/login');
                 })
                 .catch(err => console.log(err));
@@ -77,6 +79,8 @@ router.post('/registro', (req, res) => {
 });
 
 router.post('/login', (req, res, next) => {
+  req.session.email = req.body.email;
+ 
   passport.authenticate('local', {
     successRedirect: '/testeupload',
     failureRedirect: '/login',

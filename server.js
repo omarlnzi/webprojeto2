@@ -24,7 +24,7 @@ mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true})
   .catch(err => console.log(err));
 
 
-// mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 
 
 
@@ -35,6 +35,7 @@ app.use(session({
     secret: 'my-precious',
     resave: false,
     saveUninitialized: true,
+    idUser: 'oi',
     store: new MongoStore({ mongooseConnection: db })
 }));
 

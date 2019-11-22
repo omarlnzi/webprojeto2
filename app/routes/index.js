@@ -5,6 +5,7 @@ const fs = require('fs');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const multer = require('multer');
 const upload = multer({ dest: 'public/uploads' });
+const User = require('../model/user');
 
 
 
@@ -22,29 +23,53 @@ function getImagesFromDir(dirPath) {
       allImages.push('img/' + file);
     }
   }
+
   return allImages;
 }
 
 
-router.get('/', (req, res) => {
+
+router.get('/', forwardAuthenticated, (req, res) => {
   res.render('index.ejs');
 });
 
 router.post('/upload', upload.single('arquivo'), (req, res) => {
+  console.log(req.session.email)
   images.push(req.file.filename)
-  console.log(images);
+  // console.log(images);
+
+  var post = { 'imgurl': 'img/' + req.file.filename, 'text': req.body.desc };
+  User.findOneAndUpdate({ email: req.session.email }, { $push: { posts: post } }, { new: true }, (err, doc) => {
+    if (err) {
+      console.log("deu ruim!");
+    }
+
+    console.log(doc);
+  });
+
   res.redirect('/testeupload');
 });
 
 router.get('/testeupload', ensureAuthenticated, (req, res) => {
-  images = getImagesFromDir('./public/uploads')
-  console.log(images);
-  res.render('upload.ejs', { 
-    images: images,
-    name: req.user.username
+   images = getImagesFromDir('./public/uploads')
+  // console.log(images);
+  // console.log(req.session.email);
+  // let posts = [];
+  // ultimate(req.session.email).then(result => {
+
+  //   res.locals.user.posts = result.posts;
     
+  // });
+ 
+  res.render('upload.ejs', {
+    images: images,
+    
+    name: req.user.username,
+    // posts: posts
+
   });
-  // console.log(req.user.username);
+  // console.log(res.locals.user);
+  
 });
 
 module.exports = router;

@@ -19,14 +19,14 @@ var UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  posts:{
+  posts: [{
     imgurl:{
       type: String
     },
     text:{
       type: String
     }
-  }
+  }]
 
 });
 const User = mongoose.model('User', UserSchema);

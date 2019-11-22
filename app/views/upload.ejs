@@ -18,7 +18,7 @@
 
             list-style-type: none;
             width: 500px;
-        
+
         }
 
         h3 {
@@ -44,28 +44,65 @@
             background: #eee;
             cursor: pointer;
         }
+
+        .containerext {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .conta {
+            display: flex;
+            justify-content: center;
+
+        }
+        .conta2 {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;  
+
+        }
     </style>
 </head>
 
 <body>
-    <h1>Bem Vindo  <%= name %></h1>
 
-    <form action="upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="arquivo" value="" />
-        <input type="submit" value="upload &rarr;" />
-    </form>
-    <a href="/logout" class="btn btn-secondary">Logout</a>
+    <div class="containerext">
+        <div class="conta">
+            <h1>Bem Vindo <%= name %></h1>
+        
+            <div class="item"><a href="/logout" class="btn btn-secondary">Logout</a></div>
+        </div>
 
-    <ul>
-        <% for(var img in images) {%>
-        <li>
-            <img src="<%= images[img] %>" width="200" height="200">
-            <h3>Headline</h3>
-            <p>Lorem ipsum dolor sit amet...</p>
-        </li>
-        <% } %>
 
-    </ul>
+        <div class="conta2">
+            <form action="upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="arquivo" value="" />
+                <label for="story">Escreva alguma coisa</label>
+
+                <textarea id="desc" name="desc" rows="5" cols="33"></textarea>
+                <input type="submit" value="upload &rarr;" />
+            </form>
+        </div>
+
+
+        <div>
+            <ul>
+                <% for(var img in images) {%>
+                <li>
+                    <img src="<%= images[img] %>" width="200" height="200">
+                    <h3>Headline</h3>
+                    
+                </li>
+                <% } %>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
 </body>
 
 </html>
