@@ -29,47 +29,62 @@ function getImagesFromDir(dirPath) {
 
 
 
+
+
 router.get('/', forwardAuthenticated, (req, res) => {
   res.render('index.ejs');
 });
 
 router.post('/upload', upload.single('arquivo'), (req, res) => {
   console.log(req.session.email)
-  images.push(req.file.filename)
-  // console.log(images);
+  // images.push(req.file.filename)
 
-  var post = { 'imgurl': 'img/' + req.file.filename, 'text': req.body.desc };
-  User.findOneAndUpdate({ email: req.session.email }, { $push: { posts: post } }, { new: true }, (err, doc) => {
-    if (err) {
-      console.log("deu ruim!");
-    }
+  if (typeof req.file !== 'undefined') {
+    var post = { 'imgurl': 'img/' + req.file.filename, 'text': req.body.desc, 'date': '' };
+    User.findOneAndUpdate(
+      { email: req.session.email },
+      {
+        "$push": {
+          posts: {
+            "$each": [{
+              imgurl: post.imgurl,
+              text: post.text
+            }],
+            "$sort": { date: -1 }
+          }
+        }
+      }, { new: true }, (err, doc) => {
+        if (err) {
+          console.log("deu ruim!");
+        }
 
-    console.log(doc);
-  });
+        console.log(doc);
+      });
+
+  }
+
+
 
   res.redirect('/testeupload');
 });
 
 router.get('/testeupload', ensureAuthenticated, (req, res) => {
-   images = getImagesFromDir('./public/uploads')
-  // console.log(images);
-  // console.log(req.session.email);
-  // let posts = [];
-  // ultimate(req.session.email).then(result => {
+  // images = getImagesFromDir('./public/uploads');
 
-  //   res.locals.user.posts = result.posts;
-    
-  // });
- 
-  res.render('upload.ejs', {
-    images: images,
-    
-    name: req.user.username,
-    // posts: posts
-
+  User.findOne({ email: req.session.email }, 'posts', function (err, doc, ) {
+    console.log(doc.posts);
+    if (err) {
+      console.log("deu ruim!");
+    }
+    res.render('upload.ejs', {
+      posts: doc.posts,
+      name: req.user.username,
+    });
   });
+
+
   // console.log(res.locals.user);
-  
+
 });
 
 module.exports = router;

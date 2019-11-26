@@ -8,18 +8,14 @@ let express = require('express'),
   MongoStore = require('connect-mongo')(session),
   passport = require('passport'),
   cookieParser = require('cookie-parser');
-  
 
-
-
- var Schema = mongoose.Schema;
 require('./app/config/passport')(passport);
 const expressLayouts = require('express-ejs-layouts');
 const flash = require('connect-flash');
 
 
 const chave = require('./app/config/keys').mongoURI;
-mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true,  useFindAndModify: false})
   .then(() => console.log('MongoDB Conectado'))
   .catch(err => console.log(err));
 

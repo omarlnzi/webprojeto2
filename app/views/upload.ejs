@@ -5,19 +5,20 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Index</title>
     <style>
+     
+
         * {
             margin: 0;
             padding: 0;
         }
 
-        div {
-            margin: 20px;
-        }
+
 
         ul {
 
             list-style-type: none;
-            width: 500px;
+            width: 100%;
+            padding-top: 10px;
 
         }
 
@@ -25,18 +26,14 @@
             font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
         }
 
-        li img {
-            float: left;
-            margin: 0 15px 0 0;
-        }
+       
 
         li p {
             font: 200 12px/1.5 Georgia, Times New Roman, serif;
         }
 
         li {
-            width: 100%;
-            padding: 10px;
+            
             overflow: auto;
         }
 
@@ -51,48 +48,115 @@
             justify-content: space-evenly;
         }
 
-        .conta {
+        .header {
             display: flex;
-            justify-content: center;
-
+            /* justify-content: center; */
+            height: 100px;
+            padding-top: 10px;
         }
+
+        .header h1 {
+
+            flex: 1
+        }
+
+        .logout {
+
+            align-items: flex-end;
+        }
+
+
+
         .conta2 {
             display: flex;
             justify-content: center;
-            align-items: flex-start;  
+            align-items: flex-start;
+
+
+        }   
+        .conta2 form{
+            width: 100%;
+        }
+
+
+        .item {
+            display: flex;
+            height: 150px;
+  
+
+        }
+        
+        .texto {
+            font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+            word-break: break-word;
+            flex: 8
+        }
+
+        .imgcont {
+
+            flex: 2
+        }
+
+        .imgcont img {
+            padding: 10px;
+            max-width: 100%;
+            max-height: 100%;
 
         }
     </style>
 </head>
 
 <body>
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 
     <div class="containerext">
-        <div class="conta">
+        <div class="header">
             <h1>Bem Vindo <%= name %></h1>
-        
-            <div class="item"><a href="/logout" class="btn btn-secondary">Logout</a></div>
+
+            <div class="logout"><a href="/logout" class="btn btn-secondary">Logout</a></div>
         </div>
 
 
         <div class="conta2">
             <form action="upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="arquivo" value="" />
-                <label for="story">Escreva alguma coisa</label>
-
-                <textarea id="desc" name="desc" rows="5" cols="33"></textarea>
-                <input type="submit" value="upload &rarr;" />
+                <!-- <input type="file" name="arquivo" class="btn btn-primary" accept="image/*" value="" /> -->
+                <div class="custom-file">
+                    <input type="file" name="arquivo" class="custom-file-input" id="customFile" accept="image/*"
+                        lang="br">
+                    <label class="custom-file-label" for="customFile">Escolha uma imagem</label>
+            
+                </div>
+                <div class="item">
+                    
+                    <textarea id="desc" name="desc" rows="5" cols="33" placeholder="Escreve alguma coisa"></textarea>
+                   
+                </div>
+                <input class="btn btn-success" type="submit" value="upload &rarr;" />
+               
             </form>
         </div>
 
 
         <div>
+
             <ul>
-                <% for(var img in images) {%>
+                <% for(var p in posts) {%>
                 <li>
-                    <img src="<%= images[img] %>" width="200" height="200">
-                    <h3>Headline</h3>
-                    
+                    <div class="item">
+                        <div class="imgcont">
+                            <img src="<%= posts[p].imgurl %>">
+                        </div>
+
+                        <div class="texto"><%= posts[p].text %></div>
+                    </div>
+
+
                 </li>
                 <% } %>
 
