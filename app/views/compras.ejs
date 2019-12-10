@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Lista</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="compras.css" />
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script>
+    function addRow(id, product, qtde) {
+      if (id) {
+        $(".data-table tbody")
+          .append("<tr id='" + id + "' data-productname='" + product +
+            "' data-qtde='" + qtde + "'>" +
+            "<td>" + product + "</td><td>" + qtde + "</td>" +
+            "<td><button class='btn btn-info btn-xs btn-edit'>Editar</button>" +
+            "<button class='btn btn-danger btn-xs btn-delete'>Excluir</button></td></tr>"
+          );
+      }
+    }
+    function loadRows() {
+      $('.loader').show();
+      $.ajax({
+        method: 'GET',
+        url: '/loadtable',
+        // data: JSON.stringify(data),
+        dataType: 'json',
+        success: function (res) {
+          console.log(res)
+          var items = res.shoplist;
+          // var assignments = res.data;
+          var body = [];
+
+          items.forEach(function (item) {
+            addRow(item._id, item.product, item.qtde)
+          });
+          $('.loader').hide();
+        },
+      })
+    }
+    $(document).ready(function () {
+      // var data = { user: email }
+      $('.loader').hide();
+      loadRows()
+
+      setInterval(function () {
+        $.ajax({
+          method: 'GET',
+          url: '/updatecolor',
+          // data: JSON.stringify(data),
+          dataType: 'json',
+          success: function (res) {
+            $('thead').css({ "background-color": res.color })
+          }
+        })
+
+      }, 15000);
+
+
+      //SALVAR
+      $('#formCompra').on('click', '.save-btn', function (event) {
+        event.preventDefault();
+        var obj = {
+          product: $("#productname").val(),
+          qtde: $("#qtde").val()
+        }
+        objeson = JSON.stringify(obj)
+        console.log('json', objeson)
+        $.ajax({
+          url: '/addcompra',
+          data: objeson,
+          dataType: 'json',
+          type: 'POST',
+          contentType: 'application/json',
+          success: function (data) {
+            console.log(data._id)
+            addRow(data._id, obj.product, obj.qtde);
+            $("#productname").val('');
+            $("#qtde").val('');
+            $('#' + data._id).focus()
+          }
+        })
+      });
+
+      // Editar
+      $("#tablediv").on("click", ".btn-edit", function () {
+        var product = $(this).parents("tr").attr('data-productname');
+        var qtde = $(this).parents("tr").attr('data-qtde');
+
+        $(this).parents("tr").find("td:eq(0)").html('<input name="edit_product" value="' + product + '">');
+        $(this).parents("tr").find("td:eq(1)").html('<input name="edit_qtde" value="' + qtde + '">');
+
+        $(this).parents("tr").find("td:eq(2)").prepend("<button class='btn btn-info btn-xs btn-update'>Atualizar</button><button class='btn btn-warning btn-xs btn-cancel'>Cancelar</button>")
+        $(this).hide();
+      });
+      //Cancelar
+      $("#tablediv").on("click", ".btn-cancel", function () {
+
+        var product = $(this).parents("tr").attr('data-productname');
+        var qtde = $(this).parents("tr").attr('data-qtde');
+        // console.log(product, qtde)
+        $(this).parents("tr").find("td:eq(0)").text(product);
+        $(this).parents("tr").find("td:eq(1)").text(qtde);
+
+        $(this).parents("tr").find(".btn-edit").show();
+        $(this).parents("tr").find(".btn-update").remove();
+        $(this).parents("tr").find(".btn-cancel").remove();
+      });
+
+      //Atualizar
+      $("#tablediv").on("click", ".btn-update", function () {
+        $currtd = $(this)
+        var product = $(this).parents("tr").find("input[name='edit_product']").val();
+        var qtde = $(this).parents("tr").find("input[name='edit_qtde']").val();
+        var id = $(this).parents("tr").attr('id');
+        objeson = JSON.stringify({ id, product, qtde })
+        console.log('json', objeson)
+        $.ajax({
+          url: '/editcompra',
+          data: objeson,
+          dataType: 'json',
+          type: 'POST',
+          contentType: 'application/json',
+          success: function (data) {
+            console.log('Editou: ', data._id)
+            //$("#" + id)
+            $currtd.parents("tr").find("td:eq(0)").text(product);
+            $currtd.parents("tr").find("td:eq(1)").text(qtde);
+
+            $currtd.parents("tr").attr('data-product', product);
+            $currtd.parents("tr").attr('data-qtde', qtde);
+
+            $currtd.parents("tr").find(".btn-edit").show();
+            $currtd.parents("tr").find(".btn-cancel").remove();
+            $currtd.parents("tr").find(".btn-update").remove();
+            // loadRows()
+          }
+        })
+      });
+
+      //Excluir
+      $("#tablediv").on("click", ".btn-delete", function () {
+        var id = $(this).parents("tr").attr('id');
+        $.ajax({
+          url: '/deletecompra',
+          data: JSON.stringify({ deleteid: id }),
+          dataType: 'json',
+          type: 'POST',
+          contentType: 'application/json',
+          success: function (data) {
+            console.log(data)
+            $("#" + id).remove();
+            // loadRows()
+          }
+        })
+      });
+
+      //Live Search
+      $('#search').keyup(function () {
+        $('#result').html('');
+        var search = $('#search').val()
+        var expr = new RegExp(search, "i")
+        $.ajax({
+          method: 'GET',
+          url: '/loadtable',
+          // data: JSON.stringify(data),
+          dataType: 'json',
+          success: function (res) {
+            console.log(res)
+            var items = res.shoplist;
+            $('tr').removeClass('active');
+            items.forEach(function (item) {
+              if (item.product.search(expr) != -1 && search != "") {
+                $('#result').append('<li id="' + item._id + '"class="list-group-item link-class">'
+                  + item.product + ' | <span class="text-muted">'
+                  + item.qtde + '</span></li>');
+
+              }
+            });
+          }
+        })
+      })
+      //click search
+      $('#result').on('click', 'li', function () {
+        var clickedtext = $(this).text().split('|');
+        $('#search').val($.trim(clickedtext[0]));
+        var seltr = $('#result li').attr('id')
+        $("#tableproduct").find('#' + seltr).addClass('active');
+        $("#result").html('');
+      });
+
+
+    });
+
+
+  </script>
+
+</head>
+
+<body>
+
+  <div class="header">
+    <h5>Bem Vindo <%= name %> </h5>
+
+    <div class="logout"><a href="/logout" class="btn btn-secondary">Logout</a></div>
+  </div>
+
+  <div class="container">
+    <h3>Lista de Compras</h3>
+
+    <form id="formCompra">
+      <div class="form-row">
+
+        <div class="form-group col-md-6">
+
+          <label>Produto: </label>
+          <input type="text" id='productname' name="productname" class="form-control" required="true" />
+        </div>
+        <div class="form-group col-md-4">
+          <label>Quantidade/Peso: </label>
+          <input type="text" id='qtde' name="qtde" class="form-control" required="true" />
+  
+        </div>
+    
+        <div class="pull-right col-md-2">
+    
+          <button type="submit" class="btn btn-success save-btn">SALVAR</button>
+        </div>
+
+
+      </div>
+
+
+
+
+    </form>
+    <br />
+    <div id="searchdiv">
+      <input type="text" id='search' class="form-control" placeholder="Buscar">
+      <ul class="list-group" id="result"></ul>
+    </div>
+
+    <br />
+    <div id='tablediv'>
+      <table id="tableproduct" class="table table-bordered data-table">
+        <thead>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th width="200px">Ação</th>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="loader"></div>
+
+  </div>
+
+
+</body>
+
+</html>

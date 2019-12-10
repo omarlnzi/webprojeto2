@@ -30,7 +30,16 @@ var UserSchema = new mongoose.Schema({
       type: Date,
       default: Date.now
     }
-  }]
+  }],
+  shoplist: [{
+    product:{
+      type: String
+    },
+    qtde:{
+      type: String
+    },
+  }],
+
 
 });
 const User = mongoose.model('User', UserSchema);

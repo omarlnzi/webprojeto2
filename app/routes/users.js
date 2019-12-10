@@ -13,11 +13,12 @@ router.get('/registro', (req, res) => res.render('registro'));
 
 router.post('/registro', (req, res) => {
   const { username, email, password, password2 } = req.body;
-  
+
   let errors = [];
 
 
   if (!username || !email || !password || !password2) {
+
     errors.push({ msg: 'Por farvor preencha todos os campos' });
 
   }

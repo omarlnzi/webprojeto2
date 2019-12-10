@@ -2,169 +2,193 @@
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Index</title>
-    <style>
-     
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.js"></script>
+	<script>
 
-        * {
-            margin: 0;
-            padding: 0;
-        }
+		$("#saveButton").on('click', function () {
+			var id = $(this).data("userid");
+			var data = {
+				filename: $("#customFile").val(),
+				desc: $("#desc").val()
+			}
 
-
-
-        ul {
-
-            list-style-type: none;
-            width: 100%;
-            padding-top: 10px;
-
-        }
-
-        h3 {
-            font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
-        }
-
-       
-
-        li p {
-            font: 200 12px/1.5 Georgia, Times New Roman, serif;
-        }
-
-        li {
-            
-            overflow: auto;
-        }
-
-        li:hover {
-            background: #eee;
-            cursor: pointer;
-        }
-
-        .containerext {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-        }
-
-        .header {
-            display: flex;
-            /* justify-content: center; */
-            height: 100px;
-            padding-top: 10px;
-        }
-
-        .header h1 {
-
-            flex: 1
-        }
-
-        .logout {
-
-            align-items: flex-end;
-        }
+			$.ajax({
+					method: "PUT",
+					url: '/ajaxadd/' + id + "?_method=PUT",
+					dataType: 'json',
+					data: data
+				}).success(function (data) {
+					updateData.append("<p>Response: Data saved!</p>");
+					console.log("Successful!" + data);
+				}).fail(function (data) {
+					console.log("Oops not working" + data);
+				});
+		});
 
 
 
-        .conta2 {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
 
 
-        }   
-        .conta2 form{
-            width: 100%;
-        }
+
+	</script>
+	<title>Index</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
 
 
-        .item {
-            display: flex;
-            height: 150px;
-  
 
-        }
-        
-        .texto {
-            font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
-            word-break: break-word;
-            flex: 8
-        }
+		ul {
 
-        .imgcont {
+			list-style-type: none;
+			width: 100%;
+			padding-top: 10px;
 
-            flex: 2
-        }
+		}
 
-        .imgcont img {
-            padding: 10px;
-            max-width: 100%;
-            max-height: 100%;
+		h3 {
+			font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+		}
 
-        }
-    </style>
+
+
+		li p {
+			font: 200 12px/1.5 Georgia, Times New Roman, serif;
+		}
+
+		li {
+
+			overflow: auto;
+		}
+
+		li:hover {
+			background: #eee;
+			cursor: pointer;
+		}
+
+		.containerext {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+		}
+
+		.header {
+			display: flex;
+			/* justify-content: center; */
+			height: 100px;
+			padding-top: 10px;
+		}
+
+		.header h1 {
+
+			flex: 1
+		}
+
+		.logout {
+
+			align-items: flex-end;
+		}
+
+
+
+		.conta2 {
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+
+
+		}
+
+		.conta2 form {
+			width: 100%;
+		}
+
+
+		.item {
+			display: flex;
+			height: 150px;
+
+
+		}
+
+		.texto {
+			font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+			word-break: break-word;
+			flex: 8
+		}
+
+		.imgcont {
+
+			flex: 2
+		}
+
+		.imgcont img {
+			padding: 10px;
+			max-width: 100%;
+			max-height: 100%;
+
+		}
+	</style>
 </head>
 
 <body>
-    <script>
-        // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        });
-    </script>
+	<script>
 
-    <div class="containerext">
-        <div class="header">
-            <h1>Bem Vindo <%= name %></h1>
+	</script>
 
-            <div class="logout"><a href="/logout" class="btn btn-secondary">Logout</a></div>
-        </div>
+	<div class="containerext">
+		<div class="header">
+			<h1>Bem Vindo <%= name %></h1>
+			<div class="logout"><a href="/compras" class="btn btn-secondary">Compras</a></div>
+			<div class="logout"><a href="/logout" class="btn btn-secondary">Logout</a></div>
+			
+		</div>
 
 
-        <div class="conta2">
-            <form action="upload" method="post" enctype="multipart/form-data">
-                <!-- <input type="file" name="arquivo" class="btn btn-primary" accept="image/*" value="" /> -->
-                <div class="custom-file">
-                    <input type="file" name="arquivo" class="custom-file-input" id="customFile" accept="image/*"
-                        lang="br">
-                    <label class="custom-file-label" for="customFile">Escolha uma imagem</label>
-            
-                </div>
-                <div class="item">
-                    
-                    <textarea id="desc" name="desc" rows="5" cols="33" placeholder="Escreve alguma coisa"></textarea>
-                   
-                </div>
-                <input class="btn btn-success" type="submit" value="upload &rarr;" />
-               
-            </form>
-        </div>
+		<div class="conta2">
+			<p id="updateData"></p>
+			<form id="addPostForm" action="upload" method="post" enctype="multipart/form-data">
+				<!-- <input type="file" name="arquivo" class="btn btn-primary" accept="image/*" value="" /> -->
+				<div class="custom-file">
+					<input type="file" name="arquivo" class="custom-file-input" id="customFile" accept="image/*" lang="br">
+					<label class="custom-file-label" for="customFile">Escolha uma imagem</label>
+
+				</div>
+				<div class="item">
+
+					<textarea id="desc" name="desc" rows="5" cols="33" placeholder="Escreve alguma coisa"></textarea>
+
+				</div>
+				<input class="btn btn-success" type="submit" value="upload &rarr;" />
+				<a id="saveButton" href='javascript:void(0)' data-userid="<%= email %>">Upload ajax</a>
+
+			</form>
+		</div>
 
 
-        <div>
+		<div>
+			<ul>
+				<% for(var p in posts) {%>
+				<li>
+					<div class="item">
+						<div class="imgcont">
+							<img src="<%= posts[p].imgurl %>">
+						</div>
 
-            <ul>
-                <% for(var p in posts) {%>
-                <li>
-                    <div class="item">
-                        <div class="imgcont">
-                            <img src="<%= posts[p].imgurl %>">
-                        </div>
+						<div class="texto"><%= posts[p].text %></div>
+					</div>
 
-                        <div class="texto"><%= posts[p].text %></div>
-                    </div>
+				</li>
+				<% } %>
 
+			</ul>
 
-                </li>
-                <% } %>
+		</div>
 
-            </ul>
-
-        </div>
-
-    </div>
+	</div>
 
 
 </body>

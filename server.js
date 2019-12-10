@@ -7,7 +7,8 @@ let express = require('express'),
   session = require('express-session'),
   MongoStore = require('connect-mongo')(session),
   passport = require('passport'),
-  cookieParser = require('cookie-parser');
+  cookieParser = require('cookie-parser'),
+  bodyParser = require('body-parser');
 
 require('./app/config/passport')(passport);
 const expressLayouts = require('express-ejs-layouts');
@@ -15,7 +16,7 @@ const flash = require('connect-flash');
 
 
 const chave = require('./app/config/keys').mongoURI;
-mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true,  useFindAndModify: false})
+mongoose.connect(chave, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(() => console.log('MongoDB Conectado'))
   .catch(err => console.log(err));
 
@@ -24,15 +25,18 @@ mongoose.Promise = global.Promise;
 
 
 
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+
 var db = mongoose.connection;
 app.use(cookieParser());
 app.use(session({
-    secret: 'my-precious',
-    resave: false,
-    saveUninitialized: true,
-    idUser: 'oi',
-    store: new MongoStore({ mongooseConnection: db })
+  secret: 'my-precious',
+  resave: false,
+  saveUninitialized: true,
+  idUser: 'oi',
+  store: new MongoStore({ mongooseConnection: db })
 }));
 
 app.use(passport.initialize());
