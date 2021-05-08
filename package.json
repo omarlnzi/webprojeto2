@@ -29,7 +29,7 @@
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.0",
     "fs": "0.0.1-security",
-    "handlebars": "^4.5.1",
+    "handlebars": "^4.7.7",
     "handlebars-form-helpers": "^0.1.4",
     "hbs": "^4.0.6",
     "jquery": "^3.4.1",
